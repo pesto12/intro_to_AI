@@ -521,3 +521,27 @@ SaleCondition: Condition of sale
        Alloca	Allocation - two linked properties with separate deeds, typically condo with a garage unit	
        Family	Sale between family members
        Partial	Home was not completed when last assessed (associated with New Homes)
+       
+['Street', 'Alley', 'LandContour', 'Utilities', 'LotConfig', 'LandSlope', 'Condition2', 'RoofStyle', 'RoofMatl', 'Exterior2nd', 'ExterCond', 'BsmtExposure', 'BsmtFinType2', 'Heating', 'HeatingQC', 'Electrical', 'Functional', 'GarageQual', 'GarageCond', 'PavedDrive', 'Fence', 'MiscFeature', 'SaleType']
+
+housing_df.drop('Id', axis=1, inplace=True)
+
+housing_df.drop('GarageYrBlt', axis=1, inplace=True)
+housing_df[['LotFrontage', 'MasVnrArea']] = housing_df[['LotFrontage', 'MasVnrArea']].fillna(0)
+
+housing_df.drop(drop_numerical, axis=1, inplace=True)
+
+drop_indexed = housing_df[housing_df.Electrical.isnull()].index.to_numpy()
+
+housing_df[replace_NA] = housing_df[replace_NA].fillna("NA")
+housing_df[replace_None] = housing_df[replace_None].fillna("None")
+housing_df.drop(drop_indexed, inplace=True)
+
+housing_df.drop(drop_categorical, axis=1, inplace=True)
+
+numerical = housing_df.select_dtypes(include=['float64', 'int64']).columns.to_list()
+
+X = np.hstack((housing_df[numerical],
+               OneHotEncoder(sparse=False, handle_unknown='ignore').fit_transform(housing_df[categorical])))
+               
+['Linear Regression', 'Random Forest', 'Decision Tree', 'AdaBoost', 'Extra Trees', 'Gradient Boosting', 'Ridge', 'Lasso']
